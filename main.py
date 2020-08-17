@@ -2,42 +2,57 @@ import requests
 from bs4 import BeautifulSoup
 from csv import writer
 
-response = requests.get('https://covidtracking.com/data')
+class covid:
 
-soup = BeautifulSoup(response.text, 'html.parser')
+    def load(self):
 
+        self.response = requests.get('https://covidtracking.com/data')
+        self.soup = BeautifulSoup(self.response.text, 'html.parser')
 
-info = soup.find_all('td')
+        self.info = self.soup.find_all('td')
 
-cases = info[0].get_text()
+        self.cases = self.info[0].get_text()
 
-hospitalized = info[3].get_text()
+        self.sick = self.info[3].get_text()
 
-recovered = info[4].get_text()
+        self.recovered = self.info[4].get_text()
 
-deaths = info[5].get_text()
+        self.deaths = self.info[5].get_text()
 
-totalTests = info[6].get_text()
+        self.totalTests = self.info[6].get_text()
 
-negative = info[1].get_text()
+        self.negative = self.info[1].get_text()
 
-totalTestsTemp = totalTests.replace(',', '')
-negativeTemp = negative.replace(',', '')
+        self.totalTestsTemp = self.totalTests.replace(',', '')
+        self.negativeTemp = self.negative.replace(',', '')
 
-positive = int(totalTestsTemp) - int(negativeTemp)
+        self.positive = int(self.totalTestsTemp) - int(self.negativeTemp)
 
-positive = str(format (positive, ',d'))
+        self.positive = str(format (self.positive, ',d'))
 
-print(f"Total US cases: {cases}")
+    '''BELOW - col should be a string, accepted parameters are: "cases", "sick", "recovered", 
+    "deaths", "totalTests", "positive", "negative"'''
 
-print(f"Patients currently hospitalized: {hospitalized}")
+    def get(self, col):
+        if  col == "cases":
+            return(self.cases)
 
-print(f"Total recovered: {recovered}")
+        elif col == "sick":
+            return(self.sick)
 
-print(f"Death count: {deaths}")
+        elif col == "recovered":
+            return(self.recovered)
 
-print(f"Total tested: {totalTests}")
+        elif col == "deaths":
+            return(self.deaths)
 
-print(f"Positive: {positive}")
+        elif col == "totalTests":
+            return(self.totalTests)
 
-print(f"Negative: {negative}")
+        elif col == "positive":
+            return(self.positive)
+
+        elif col == "negative":
+            return(self.negative)
+
+#TODO: USE THIS TO MAKE ACTUAL TRACKER THAT CHECKS EVERY 5 MINUTES
